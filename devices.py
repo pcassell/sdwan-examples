@@ -1,14 +1,18 @@
 """
-Class with REST Api GET and POST libraries
+List SDWAN device model types and their associated counts.
 
-Example: python rest_api_lib.py vmanage_hostname username password
+Example: python2 devices.py sdwandemo.cisco.com demo demo
 
 PARAMETERS:
-    vmanage_hostname : Ip address of the vmanage or the dns name of the vmanage
+    vmanage_hostname : Ip address of the vmanage or the dns name of the vmanage without port number
     username : Username to login the vmanage
     password : Password to login the vmanage
 
-Note: All the three arguments are manadatory
+Note: All the three arguments are manadatory.  
+
+REST API class pulled from:
+https://sdwan-docs.cisco.com/Product_Documentation/Command_Reference/
+vManage_REST_APIs/vManage_REST_APIs_Overview/Using_the_vManage_REST_APIs
 """
 import requests
 import sys
@@ -82,7 +86,4 @@ def parse_data(obj):
 
 
 if __name__ == "__main__":
-    #example CLI
-    #python2 devices.py sdwandemo.cisco.com demo demo
-    #python2 devices.py 172.26.33.23 admin admin
     sys.exit(main(sys.argv[1:]))
