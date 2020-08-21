@@ -4,13 +4,12 @@ import re
 import logging
 # logging.basicConfig(level=logging.DEBUG)
 
-VSMART_IPS = ["192.168.1.22", "192.168.1.21"]
+VSMART_IPS = ["192.168.1.21", "192.168.1.22"]
 VSMART_USER = "admin"
 VSMART_PASS = "admin"
 # Number of seconds to wait between cycles of checking all VSMART_IPS
 WAIT_BETWEEN_CHECKS = 300
-# REBOOT_CASE = "too many reboots"
-REBOOT_CASE = "All daemons up"
+REBOOT_CASE = "too many reboots"
 
 MAX_BUFFER = 65535
 
