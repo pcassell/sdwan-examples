@@ -9,8 +9,8 @@ VSMART_USER = "admin"
 VSMART_PASS = "admin"
 # Number of seconds to wait between cycles of checking all VSMART_IPS
 WAIT_BETWEEN_CHECKS = 300
-REBOOT_CASE = "too many reboots"
-# REBOOT_CASE = "All daemons up"
+# REBOOT_CASE = "too many reboots"
+REBOOT_CASE = "All daemons up"
 
 MAX_BUFFER = 65535
 
@@ -26,6 +26,9 @@ def main(IP):
         remote_conn = ssh.invoke_shell()
         out = get_response(remote_conn)
 
+        # disable --More-- paging
+        send_command(remote_conn, "screen-length 0\n")
+
         send_command(remote_conn, "show system status\n")
         out = get_response(remote_conn)
 
@@ -34,6 +37,7 @@ def main(IP):
                 status = line
                 if REBOOT_CASE in line:
                     send_command(remote_conn, "reboot\n")
+                    send_command(remote_conn, "yes\n")
                     return (True, status)
                 return (False, status)
 
@@ -51,32 +55,19 @@ def send_command(conn, data):
 
 def get_response(conn):
     not_done = True
-    more_present = True
     max_loops = 25
     i = 0
     output = ""
-    # this needs to be cleaned up
-    while more_present:
-        while not_done and (i <= max_loops):
-            time.sleep(0.4)
-            i += 1
-            # Keep reading data as long as available (up to max_loops)
-            if conn.recv_ready():
-                last = clean_output(conn.recv(MAX_BUFFER).decode('ascii'))
-                # print("last: {}".format(last[-21:-1]))
-                output += last
-            else:
-                not_done = False
-        last_text = strip_ansii_esc(output.split("\n")[-1])
-        if last_text == "--More--":
-            more_present = True
-            not_done = True
-            max_loops = 25
-            i = 0
-            # More exists, so send a space bar
-            send_command(conn, " \n")
+    while not_done and (i <= max_loops):
+        time.sleep(0.4)
+        i += 1
+        # Keep reading data as long as available (up to max_loops)
+        if conn.recv_ready():
+            last = clean_output(conn.recv(MAX_BUFFER).decode('ascii'))
+            # print("last: {}".format(last[-21:-1]))
+            output += last
         else:
-            more_present = False
+            not_done = False
     return output
 
 
